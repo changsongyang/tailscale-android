@@ -162,6 +162,14 @@ type InputStream interface {
 	Close() error
 }
 
+// ShareFileHelper corresponds to the Kotlin ShareFileHelper class
+type ShareFileHelper interface {
+	OpenFileForWriting(filename string) int32
+	RenamePartialFile(partialUri string, // URI of the partial file
+		targetDirUri string, // The directory URI (from the directory picker)
+		targetName string) string
+}
+
 // The below are global callbacks that allow the Java application to notify Go
 // of various state changes.
 
@@ -181,4 +189,12 @@ func SendLog(logstr []byte) {
 		// Channel is full, log not sent
 		log.Printf("Log %v not sent", logstr) // missing argument in original code
 	}
+}
+
+func SetShareFileHelper(fileHelper ShareFileHelper) {
+	onShareFileHelper <- fileHelper
+}
+
+func SetDirectFileRoot(filePath string) {
+	onFilePath <- filePath
 }
